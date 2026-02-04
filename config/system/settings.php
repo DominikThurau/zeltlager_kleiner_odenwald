@@ -37,7 +37,7 @@ return [
         ],
         'vite_asset_collector' => [
             'defaultManifest' => '_assets/vite/.vite/manifest.json',
-            'devServerUri' => 'https://zeltlager-kleiner-odenwald.ddev.site:5174',
+            'devServerUri' => 'https://vite.zeltlager-kleiner-odenwald.ddev.site',
             'useDevServer' => '1',
         ],
     ],

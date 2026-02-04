@@ -31,9 +31,11 @@ web_environment:
 'vite_asset_collector' => [
     'defaultManifest' => '_assets/vite/.vite/manifest.json',
     'devServerUri' => 'https://vite.zeltlager-kleiner-odenwald.ddev.site',
-    'useDevServer' => 'auto',
+    'useDevServer' => '1',  // Force enable - 'auto' detection may not work reliably
 ],
 ```
+
+**Important:** Set `useDevServer` to `'1'` to force-enable the dev server. The `'auto'` mode can fail to detect the Vite server properly.
 
 ### 3. `vite.config.js` - Vite Configuration
 
@@ -92,12 +94,25 @@ ddev typo3 cache:flush
 
 ## Troubleshooting
 
-**Assets still loading from `/_assets/vite/`?**
+**Assets still loading from `/_assets/vite/` instead of Vite dev server?**
 
-```bash
-ddev typo3 cache:flush
-# Hard refresh browser (Cmd+Shift+R)
-```
+This is the most common issue. Verify `useDevServer` is set correctly:
+
+1. Check `config/system/settings.php`:
+
+   ```php
+   'useDevServer' => '1',  // Must be '1' not 'auto'
+   ```
+
+2. Clear cache:
+
+   ```bash
+   ddev typo3 cache:flush
+   ```
+
+3. Hard refresh browser (Cmd+Shift+R)
+
+4. Verify assets now load from `https://vite.zeltlager-kleiner-odenwald.ddev.site/`
 
 **Vite not running?**
 
