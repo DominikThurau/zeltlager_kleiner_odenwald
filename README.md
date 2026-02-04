@@ -1,66 +1,176 @@
-# TYPO3 CMS Base Distribution
+# Zeltlager Kleiner Odenwald
 
-Get going quickly with TYPO3 CMS.
+TYPO3 14 website for Zeltlager Kleiner Odenwald with custom theme and Vite hot module reloading.
+
+## Tech Stack
+
+- **TYPO3 CMS:** 14.x
+- **PHP:** 8.3
+- **Node.js:** via pnpm
+- **Build Tool:** Vite with HMR support
+- **Development:** DDEV local environment
 
 ## Prerequisites
 
-* PHP 8.2
-* [Composer](https://getcomposer.org/download/)
+- [DDEV](https://ddev.readthedocs.io/) installed
+- [pnpm](https://pnpm.io/) (installed automatically via DDEV)
 
-## Quickstart
+## Getting Started
 
-* `composer create-project typo3/cms-base-distribution project-name ^13`
-* `cd project-name`
-
-Note that this distribution installs most, but not all of the TYPO3 CMS core extensions.
-Depending on your need you might also want to install other TYPO3 extensions from
-[packagist.org](https://packagist.org/?type=typo3-cms-framework).
-
-### Setup
-
-To start an interactive installation, you can do so by executing the following
-command and then follow the wizard:
+### 1. Clone and Setup
 
 ```bash
-composer exec typo3 setup
+git clone git@github.com:DominikThurau/zeltlager_kleiner_odenwald.git
+cd zeltlager_kleiner_odenwald
+ddev start
+ddev composer install
 ```
 
-### Setup unattended (optional)
+### 2. Database Setup
 
-If you're a more advanced user, you might want to leverage the unattended installation.
-To do this, you need to execute the following command and substitute the arguments
-with your own environment configuration.
+Import your database or set up a fresh installation:
 
 ```bash
-export TYPO3_SETUP_ADMIN_PASSWORD=$(tr -dc "_A-Za-z0-9#=$()/" < /dev/urandom | head -c24)
-composer exec -- typo3 setup \
-    --no-interaction \
-    --server-type=other \
-    --driver=sqlite \
-    --admin-username=admin \
-    --admin-email="info@example.com" \
-    --project-name="My TYPO3 Project" \
-    --create-site="http://localhost:8000/"
-echo "Admin password: ${TYPO3_SETUP_ADMIN_PASSWORD}"
+ddev typo3 setup
 ```
 
-### Development server
+### 3. Start Development
 
-While it's advised to use a more sophisticated web server such as
-Apache 2 or Nginx, you can instantly run the project by using PHPs` built-in
-[web server](https://secure.php.net/manual/en/features.commandline.webserver.php).
+With the ddev-vite-sidecar addon, Vite runs automatically when you start DDEV:
 
-* `TYPO3_CONTEXT=Development php -S localhost:8000 -t public`
-* open your browser at "http://localhost:8000"
+```bash
+ddev start
+```
 
-Please be aware that the built-in web server is single threaded and only meant
-to be used for development.
+Your site will be available at `https://zeltlager-kleiner-odenwald.ddev.site` with hot module reloading automatically enabled!
 
-##  Next steps
+### 4. Production Build
 
-* [Getting Started with TYPO3](https://docs.typo3.org/permalink/t3start:start)
-* [Create a Site Package](https://docs.typo3.org/permalink/t3sitepackage:start)
+When ready to deploy, build the production assets:
+
+```bash
+pnpm run build
+```
+
+## Project Structure
+
+```
+├── .ddev/                    # DDEV configuration
+├── config/                   # TYPO3 configuration
+│   ├── sites/               # Site configuration
+│   └── system/              # System settings
+├── packages/                 # Custom extensions
+│   └── thurau_dev/          # Main theme extension
+│       ├── Configuration/   # TypoScript, TCA, etc.
+│       └── Resources/
+│           ├── Private/     # Templates, Vite entry files
+│           └── Public/      # Compiled assets
+├── public/                  # Web root
+├── vite.config.js          # Vite configuration
+└── composer.json           # PHP dependencies
+```
+
+## Custom Extension: thurau_dev
+
+The main theme extension located in `packages/thurau_dev/` includes:
+
+- **PageView Templates:** Fluid templates for page layouts
+- **Vite Integration:** Hot module reloading during development
+- **Entry Points:**
+  - `Resources/Private/Scripts/Main.entry.js`
+  - `Resources/Private/Styles/Styles.entry.css`
+
+## Available Commands
+
+```bash
+# Start DDEV
+ddev start
+
+# Stop DDEV
+ddev stop
+
+# Restart DDEV (needed after config changes)
+ddev restart
+
+# Clear TYPO3 caches
+ddev typo3 cache:flush
+
+# Install Composer dependencies
+ddev composer install
+
+# Build for production
+pnpm run build
+
+# Run any pnpm command
+ddev pnpm <command>
+```
+
+## Development Workflow
+
+1. **Start your environment:**
+
+## Development Workflow
+
+1. **Start your environment:**
+
+   ```bash
+   ddev start
+   ```
+
+   Vite runs automatically in the background with HMR enabled.
+
+2. **Make changes** to files in:
+3. **See instant updates** in your browser at `https://zeltlager-kleiner-odenwald.ddev.site`
+
+4. **Clear TYPO3 cache** if template changes don't appear:
+   ```bash
+   ddev typo3 cache:flush
+   ```
+
+## Troubleshooting
+
+### HMR Not Working?
+
+1. Ensure DDEV is running: `ddev start`
+2. Clear TYPO3 cache: `ddev typo3 cache:flush`
+3. Hard refresh browser: `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows)
+4. Check assets load from `https://vite.zeltlager-kleiner-odenwald.ddev.site/` not `/_assets/`
+
+### Port 5173 Already in Use?
+
+The ddev-vite-sidecar handles this automatically. If you have issues:
+
+```bash
+ddev restart
+```
+
+Restart the Vite service:
+
+```bash
+ddev restart
+```
+
+### Port 5173 Already in Use?
+
+The ddev-vite-sidecar handles this automatically. If you have issues:
+
+```bash
+ddev exec "pkill -9 -f vite"
+ddev vite-dev
+```
+
+### Assets Not Loading?
+
+Make sure you've built them at least once:
+
+```bash
+pnpm run build
+```
+
+## Documentation
+
+See [VITE_HMR_SETUP.md](./VITE_HMR_SETUP.md) for detailed Vite HMR configuration.
 
 ## License
 
-GPL-2.0 or later
+See [LICENSE](./LICENSE) file.
