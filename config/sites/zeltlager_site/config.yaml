@@ -1,0 +1,18 @@
+base: /
+dependencies:
+  - thurau-development/thurau-dev
+  - typo3/fluid-styled-content
+  - typo3/fluid-styled-content-css
+languages:
+  -
+    title: Deutsch
+    enabled: true
+    languageId: 0
+    base: /
+    locale: de_DE.utf8
+    navigationTitle: Deutsch
+    flag: de
+    hreflang: ''
+    websiteTitle: 'Zeltlager kleiner Odenwald'
+rootPageId: 1
+websiteTitle: 'Zeltlager kleiner Odenwald'
